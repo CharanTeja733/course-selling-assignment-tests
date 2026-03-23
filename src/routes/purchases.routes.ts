@@ -1,7 +1,7 @@
 import express from 'express';
 import { requireRole } from '../middlewares/authorization.middlewares';
 import { getAllCoursePurchasedByUserController, purchaseCourseControllers } from '../controllers/purchase.controllers';
-const router = express.Router();
+const router = express.Router({ mergeParams: true });
 
 router.use(requireRole('STUDENT'));
 

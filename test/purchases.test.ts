@@ -117,6 +117,8 @@ describe("Purchase APIs", () => {
     });
 
     const data = await res.json();
+    
+    expect(res.status).toBe(200);
     expect(Array.isArray(data)).toBe(true);
     expect(data[0].course.id).toBe(courseId);
   });

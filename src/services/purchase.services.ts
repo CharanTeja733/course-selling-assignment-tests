@@ -1,6 +1,6 @@
-import { purchasesTable } from "../db/schema";
+import { purchasesTable, coursesTable } from "../db/schema";
 import db from "../db/index";
-import { eq, count, desc,and } from "drizzle-orm";
+import { eq, count, desc, and } from "drizzle-orm";
 
 export async function purchaseCourse(courseId: string, userId: string) {
     
@@ -28,12 +28,13 @@ export async function  getAllCoursePurchasedByUser(userId: string, page: number,
     const purchasedCourses = await db
         .select()
         .from(purchasesTable)
+        .innerJoin(coursesTable, eq(purchasesTable.courseId, coursesTable.id))
         .where(eq(purchasesTable.userId, userId))
         .orderBy(desc(purchasesTable.createdAt))
         .limit(pageSize)
         .offset((page - 1)*pageSize);
 
-    return {purchasedCourses, count: totalResult.count};    
+    return {purchasedCourses: purchasedCourses.map(item => ({...item.purchases, course: item.courses})), count: totalResult.count};    
 }
 
 export async function getTotalPurchasesForCourse(courseId: string) {

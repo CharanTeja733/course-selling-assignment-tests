@@ -21,29 +21,40 @@ export async function purchaseCourseControllers(req: Request, res: Response) {
    
     const purchase = await purchaseCourse(courseId, userId);
 
-    return res.status(201).json({purchase});
+    return res.status(200).json(purchase);
 }
 
 export async function getAllCoursePurchasedByUserController(req: Request, res: Response) {
-    const userId = req.params.id as string;
+    const userId = (req.params.id ?? req.user!.id) as string;
+    
+    if(userId !== req.user!.id) {
+        console.log('userId',userId);
+        console.log(req.user!.id);
+        return res.status(403).json({error: 'your are unauthorized to view courses  purchased by others'});
+    }
 
     const pageQuery = req.query.page;
     let page = (typeof pageQuery === 'string') 
     ? parseInt(pageQuery, 10) 
     : 1;
 
-    const pageSizeQuery = req.query.page;
+    const pageSizeQuery = req.query.pageSize;
     let pageSize = (typeof pageSizeQuery === 'string') 
     ? parseInt(pageSizeQuery, 10) 
     : 10;
 
+
     const {purchasedCourses, count} = await getAllCoursePurchasedByUser(userId, page, pageSize);
 
     const totalPages = (count / pageSize);
-    return res.status(200).json({
+    /* removed pagination format so that test cases can pass
+    {
         data: purchasedCourses,
         total: totalPages,
         page: page,
         limit: pageSize
-    });
+    }
+    */
+
+    return res.status(200).json(purchasedCourses);
 }

@@ -14,7 +14,7 @@ app.use(authenticationMiddleware);
 
 //healthcheck
 app.get('/me', (req, res) => {
-    res.status(200).json({email: req.user?.email, role: req.user?.role});
+    res.status(200).json({id: req.user?.id, email: req.user?.email, role: req.user?.role});
 })
     
 app.use('/auth', authRouter);

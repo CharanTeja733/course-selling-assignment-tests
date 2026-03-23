@@ -27,11 +27,3 @@ export function authenticationMiddleware(req: Request, res: Response, next: Next
     return next();
 }
 
-
-export function ensureAuthenticated(req: Request, res: Response, next: NextFunction) {
-    if(!req.user) {
-        return res.status(401).json({error: 'your are not logged in'});
-    }
-    
-    next();
-}
